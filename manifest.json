@@ -1,0 +1,24 @@
+{
+    "name": "TODO List",
+    "version": "1.0",
+    "author":"Nick Heyn",
+    "description": "Create TODO lists to manage your daily tasks!",
+    "permissions":["activeTab", "declarativeContent","storage"],
+    "background": {
+        "scripts":["background.js"],
+        "persistent":false
+    },
+    "browser_action":{
+        "default_popup":"popup.html",
+        "default_icon": "images/list_icon.png",
+        "default_title":"TODO List"
+    },
+    "options_page":"options.html",
+    "icons": {
+        "16": "images/list_icon.png",
+        "32": "images/list_icon.png",
+        "48": "images/list_icon.png",
+        "128": "images/list_icon.png"
+    },
+    "manifest_version": 2
+  }

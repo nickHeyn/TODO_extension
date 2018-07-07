@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+  <html style="height: 160px; width: 380px;">
+    <head>
+      <style>
+        #addNewButton {
+          outline: none;
+          background-color: transparent;
+          border:none;
+          cursor: pointer;
+          overflow: hidden;
+        }
+
+        #newListItem {
+          border:none;
+          background: transparent;
+          border-bottom: 1px solid rgb(0, 0, 0);
+          outline: none;
+          display: none;
+        }
+      </style>
+    <script type="text/javascript" src="popup.js"></script>
+    </head>
+    <body>
+      <header>
+        	<h3>My TO-DO List:</h3>
+      </header>
+      <ul id="list">
+      </ul>
+
+      <br/>
+
+      <button id="addNewButton" title="Add new list item"><img src="images/add_plus-512.png" style="width: 15px; height: 15px;"></button>
+      <input type="text" id="newListItem">
+    </body>
+  </html>
