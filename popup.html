@@ -2,7 +2,7 @@
   <html style="height: 160px; width: 380px;">
     <head>
       <style>
-        #addNewButton {
+        #addNewButton, #cancelNewItem {
           outline: none;
           background-color: transparent;
           border:none;
@@ -18,7 +18,6 @@
           display: none;
         }
       </style>
-    <script type="text/javascript" src="popup.js"></script>
     </head>
     <body>
       <header>
@@ -31,5 +30,7 @@
 
       <button id="addNewButton" title="Add new list item"><img src="images/add_plus-512.png" style="width: 15px; height: 15px;"></button>
       <input type="text" id="newListItem">
+      <button id="cancelNewItem" title="Cancel" style="display: none;"><img src="images/x-512.png" style="width:15px; height: 15px;"></button>
+      <script type="text/javascript" src="popup.js"></script>
     </body>
   </html>
