@@ -3,19 +3,19 @@ var addNewButton = document.getElementById('addNewButton');
 var newListItem = document.getElementById('newListItem');
 var cancelButton = document.getElementById('cancelNewItem')
 
+var itemList = []; // array used to keep track of all the elements in the todo list
 // Get list items from storage
 chrome.storage.sync.get('list', function(data) {
     var i;
     for(i = 0; i < data['list'].length; i++) {
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode(data['list'][i]));
-        list.appendChild(li);
+        addElementToList(data['list'][i]);
     }
 });
 
 // shows neccessary elements when the plus button is pressed
 addNewButton.onclick = function() {
     newListItem.style.display = 'inline-block';
+    newListItem.focus();
     addNewButton.style.display = 'none';
     cancelButton.style.display = 'inline-block';
 }  
@@ -24,13 +24,11 @@ addNewButton.onclick = function() {
 newListItem.addEventListener('keypress', function(e){
     if(e.keyCode == 13) { // keycode for the 'enter' key
         // add new item to list
-        var new_li = document.createElement("li");
-        new_li.appendChild(document.createTextNode(newListItem.value));
-        list.appendChild(new_li);
-        
+        addElementToList({text:newListItem.value, checked: false});      
 
         clearNewItemElements();
-        saveItems();
+
+        saveList();
     }
 });
 
@@ -44,15 +42,43 @@ function clearNewItemElements() {
     addNewButton.style.display = 'block';
 }
 
-// saves all the items in the todo list to chrome.storage
-function saveItems() {
-    var liItems = list.getElementsByTagName('li'); // array of the li elements
-    var itemList = []; // array to be saved
-    for(var i = 0; i < liItems.length; i++) {
-        itemList.push(liItems[i].textContent);
-    }
+// takes in the data for the item and adds it to the list and item array
+function addElementToList(item) {
+    var li = document.createElement("li");
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = item.checked;
+    checkbox.id = itemList.length;
+    itemList.push(item);
 
+    // add checked listener. Will strikethough text if checked
+    checkbox.addEventListener('change', function() {
+        var label = this.nextElementSibling;
+        if(this.checked) {
+            label.style.textDecoration ="line-through";
+        }
+        else {
+            label.style.textDecoration ="none";
+        }
+        itemList[this.id].checked = this.checked;
+        saveList();
+    });
+
+    var label = document.createElement('label');
+    if(item.checked) {
+        label.style.textDecoration = "line-through";
+    }
+    label.appendChild(document.createTextNode(item.text));
+
+    li.appendChild(checkbox);
+    li.appendChild(label);
+    list.appendChild(li);
+}
+
+// Saves the elements in the todo list to chrome.storage
+function saveList() {
     chrome.storage.sync.set({'list': itemList}, function() {
         console.log('List updated');
     });
 }
+
