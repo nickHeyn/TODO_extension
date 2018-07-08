@@ -3,7 +3,7 @@
     "version": "1.0",
     "author":"Nick Heyn",
     "description": "Create TODO lists to manage your daily tasks!",
-    "permissions":["activeTab", "declarativeContent","storage"],
+    "permissions":["storage"],
     "background": {
         "scripts":["background.js"],
         "persistent":false

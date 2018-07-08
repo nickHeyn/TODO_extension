@@ -27,17 +27,32 @@ newListItem.addEventListener('keypress', function(e){
         var new_li = document.createElement("li");
         new_li.appendChild(document.createTextNode(newListItem.value));
         list.appendChild(new_li);
+        
 
         clearNewItemElements();
+        saveItems();
     }
 });
 
 cancelButton.onclick = clearNewItemElements;
 
-// close and clear input field
+// close and clear input field and show the plus button again
 function clearNewItemElements() {
     newListItem.value = '';
     newListItem.style.display = 'none';
     cancelButton.style.display = 'none';
     addNewButton.style.display = 'block';
+}
+
+// saves all the items in the todo list to chrome.storage
+function saveItems() {
+    var liItems = list.getElementsByTagName('li'); // array of the li elements
+    var itemList = []; // array to be saved
+    for(var i = 0; i < liItems.length; i++) {
+        itemList.push(liItems[i].textContent);
+    }
+
+    chrome.storage.sync.set({'list': itemList}, function() {
+        console.log('List updated');
+    });
 }
