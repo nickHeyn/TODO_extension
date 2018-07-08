@@ -19,6 +19,7 @@ addNewButton.onclick = function() {
     addNewButton.style.display = 'none';
     cancelButton.style.display = 'inline-block';
 }  
+
  // Add element to todo list when the enter key is pressed
 newListItem.addEventListener('keypress', function(e){
     if(e.keyCode == 13) { // keycode for the 'enter' key
@@ -27,10 +28,16 @@ newListItem.addEventListener('keypress', function(e){
         new_li.appendChild(document.createTextNode(newListItem.value));
         list.appendChild(new_li);
 
-        // close and clear input field
-        newListItem.value = '';
-        newListItem.style.display = 'none';
-        cancelButton.style.display = 'none';
-        addNewButton.style.display = 'block';
+        clearNewItemElements();
     }
-})
+});
+
+cancelButton.onclick = clearNewItemElements;
+
+// close and clear input field
+function clearNewItemElements() {
+    newListItem.value = '';
+    newListItem.style.display = 'none';
+    cancelButton.style.display = 'none';
+    addNewButton.style.display = 'block';
+}
