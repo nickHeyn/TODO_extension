@@ -2,7 +2,7 @@
   <html style="height: 160px; width: 380px;">
     <head>
       <style>
-        #addNewButton, #cancelNewItem {
+        .iconButton {
           outline: none;
           background-color: transparent;
           border:none;
@@ -15,7 +15,21 @@
           background: transparent;
           border-bottom: 1px solid rgb(0, 0, 0);
           outline: none;
-          display: none;
+        }
+
+        ul {
+          list-style-type:none;
+          padding: 0;
+          margin: 0;
+        }
+
+        input.checkbox {
+          display: inline;
+        }
+
+        .icon {
+          width: 15px; 
+          height: 15px;
         }
       </style>
     </head>
@@ -28,9 +42,7 @@
 
       <br/>
 
-      <button id="addNewButton" title="Add new list item"><img src="images/add_plus-512.png" style="width: 15px; height: 15px;"></button>
-      <input type="text" id="newListItem">
-      <button id="cancelNewItem" title="Cancel" style="display: none;"><img src="images/x-512.png" style="width:15px; height: 15px;"></button>
+      <input type="text" id="newListItem" placeholder="Add New Task">
       <script type="text/javascript" src="popup.js"></script>
     </body>
   </html>
