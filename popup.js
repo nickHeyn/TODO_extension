@@ -1,7 +1,9 @@
 var list = document.getElementById('list');
 var newListItem = document.getElementById('newListItem');
-newListItem.focus();
+var notFinishedCount = 0;
 var itemList = []; // array used to keep track of all the elements in the todo list
+
+newListItem.focus();
 
 // Get list items from storage
 chrome.storage.sync.get('list', function(data) {
@@ -35,9 +37,11 @@ function addElementToList(item) {
         var label = this.nextElementSibling;
         if(this.checked) {
             label.style.textDecoration ="line-through";
+            notFinishedCount--;
         }
         else {
             label.style.textDecoration ="none";
+            notFinishedCount++;
         }
         itemList[this.parentElement.id].checked = this.checked;
         saveList();
@@ -46,6 +50,9 @@ function addElementToList(item) {
     var label = document.createElement('label');
     if(item.checked) {
         label.style.textDecoration = "line-through";
+    }
+    else{
+        notFinishedCount++;
     }
     label.appendChild(document.createTextNode(item.text));
 
@@ -62,6 +69,9 @@ function addElementToList(item) {
         for(var i = idIndex + 1; i < itemList.length; i++) {
             var idNum = parseInt(htmlList[i].id);
             htmlList[i].id = idNum-1;
+        }
+        if(!itemList[idIndex].checked){
+            notFinishedCount--;
         }
         this.parentElement.remove();
         itemList.splice(idIndex, 1);
@@ -81,5 +91,11 @@ function saveList() {
     chrome.storage.sync.set({'list': itemList}, function() {
         console.log('List updated');
     });
+    if(notFinishedCount){
+        chrome.browserAction.setBadgeText({text:String(notFinishedCount)});
+    }
+    else{
+        chrome.browserAction.setBadgeText({text:''});
+    }
 }
 
