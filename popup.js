@@ -1,7 +1,7 @@
 var list = document.getElementById('list');
 var addNewButton = document.getElementById('addNewButton');
 var newListItem = document.getElementById('newListItem');
-var cancelButton = document.getElementById('cancelNewItem')
+var cancelButton = document.getElementById('cancelNewItem');
 
 var itemList = []; // array used to keep track of all the elements in the todo list
 // Get list items from storage
@@ -45,12 +45,10 @@ function clearNewItemElements() {
 // takes in the data for the item and adds it to the list and item array
 function addElementToList(item) {
     var li = document.createElement("li");
+    li.id = itemList.length;
     var checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.checked = item.checked;
-    checkbox.id = itemList.length;
-    itemList.push(item);
-
     // add checked listener. Will strikethough text if checked
     checkbox.addEventListener('change', function() {
         var label = this.nextElementSibling;
@@ -60,7 +58,7 @@ function addElementToList(item) {
         else {
             label.style.textDecoration ="none";
         }
-        itemList[this.id].checked = this.checked;
+        itemList[this.parentElement.id].checked = this.checked;
         saveList();
     });
 
@@ -70,9 +68,31 @@ function addElementToList(item) {
     }
     label.appendChild(document.createTextNode(item.text));
 
+    // adding the delete button
+    var deleteButton = document.createElement('button');
+    var deleteIcon = document.createElement('img');
+    deleteIcon.className = "icon";
+    deleteIcon.src ="images/delete-icon.png";
+    deleteButton.appendChild(deleteIcon);
+    deleteButton.className = "iconButton";
+    deleteButton.addEventListener('click', function(){
+        var idIndex = parseInt(this.parentElement.id);
+        var htmlList = list.getElementsByTagName('li');
+        for(var i = idIndex + 1; i < itemList.length; i++) {
+            var idNum = parseInt(htmlList[i].id);
+            htmlList[i].id = idNum-1;
+        }
+        this.parentElement.remove();
+        itemList.splice(idIndex, 1);
+        saveList();
+    });
+
     li.appendChild(checkbox);
     li.appendChild(label);
+    li.appendChild(deleteButton);
+    li.append
     list.appendChild(li);
+    itemList.push(item);
 }
 
 // Saves the elements in the todo list to chrome.storage
