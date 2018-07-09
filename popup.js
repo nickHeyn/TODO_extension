@@ -1,9 +1,8 @@
 var list = document.getElementById('list');
-var addNewButton = document.getElementById('addNewButton');
 var newListItem = document.getElementById('newListItem');
-var cancelButton = document.getElementById('cancelNewItem');
-
+newListItem.focus();
 var itemList = []; // array used to keep track of all the elements in the todo list
+
 // Get list items from storage
 chrome.storage.sync.get('list', function(data) {
     var i;
@@ -12,35 +11,17 @@ chrome.storage.sync.get('list', function(data) {
     }
 });
 
-// shows neccessary elements when the plus button is pressed
-addNewButton.onclick = function() {
-    newListItem.style.display = 'inline-block';
-    newListItem.focus();
-    addNewButton.style.display = 'none';
-    cancelButton.style.display = 'inline-block';
-}  
-
  // Add element to todo list when the enter key is pressed
 newListItem.addEventListener('keypress', function(e){
     if(e.keyCode == 13) { // keycode for the 'enter' key
         // add new item to list
         addElementToList({text:newListItem.value, checked: false});      
 
-        clearNewItemElements();
+        newListItem.value = '';
 
         saveList();
     }
 });
-
-cancelButton.onclick = clearNewItemElements;
-
-// close and clear input field and show the plus button again
-function clearNewItemElements() {
-    newListItem.value = '';
-    newListItem.style.display = 'none';
-    cancelButton.style.display = 'none';
-    addNewButton.style.display = 'block';
-}
 
 // takes in the data for the item and adds it to the list and item array
 function addElementToList(item) {
