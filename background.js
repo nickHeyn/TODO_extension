@@ -3,4 +3,5 @@ chrome.runtime.onInstalled.addListener(function() {
       console.log('Empty list added');
     });
     chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+    chrome.storage.sync.set({idCount: 0});
   });

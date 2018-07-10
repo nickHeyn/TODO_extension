@@ -13,22 +13,23 @@ chrome.storage.sync.get('list', function(data) {
     }
 });
 
- // Add element to todo list when the enter key is pressed
+ // Add element to to-do list when the enter key is pressed
 newListItem.addEventListener('keypress', function(e){
     if(e.keyCode == 13) { // keycode for the 'enter' key
         // add new item to list
-        addElementToList({text:newListItem.value, checked: false});      
-
-        newListItem.value = '';
-
-        saveList();
+        chrome.storage.sync.get('idCount', function(idNum){
+            addElementToList({text:newListItem.value, checked: false, id : idNum.idCount});
+            chrome.storage.sync.set({idCount:idNum.idCount+1});
+            newListItem.value = '';
+            saveList();
+        });
     }
 });
 
 // takes in the data for the item and adds it to the list and item array
 function addElementToList(item) {
     var li = document.createElement("li");
-    li.id = itemList.length;
+    li.id = item.id;
     var checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.checked = item.checked;
@@ -43,7 +44,8 @@ function addElementToList(item) {
             label.style.textDecoration ="none";
             notFinishedCount++;
         }
-        itemList[this.parentElement.id].checked = this.checked;
+        var task = findTask(this.parentElement.id);
+        task.checked = this.checked;
         saveList();
     });
 
@@ -64,17 +66,12 @@ function addElementToList(item) {
     deleteButton.appendChild(deleteIcon);
     deleteButton.className = "iconButton";
     deleteButton.addEventListener('click', function(){
-        var idIndex = parseInt(this.parentElement.id);
-        var htmlList = list.getElementsByTagName('li');
-        for(var i = idIndex + 1; i < itemList.length; i++) {
-            var idNum = parseInt(htmlList[i].id);
-            htmlList[i].id = idNum-1;
-        }
-        if(!itemList[idIndex].checked){
+        var id= parseInt(this.parentElement.id);
+        if(!findTask(id).checked){
             notFinishedCount--;
         }
         this.parentElement.remove();
-        itemList.splice(idIndex, 1);
+        removeTask(id);
         saveList();
     });
 
@@ -96,6 +93,24 @@ function saveList() {
     }
     else{
         chrome.browserAction.setBadgeText({text:''});
+    }
+}
+
+function findTask(id) {
+    for(var i = 0; i < itemList.length; i++){
+        if(itemList[i].id == id){
+            return itemList[i];
+        }
+    }
+    return null;
+}
+
+function removeTask(taskID) {
+    for(var i = 0; i < itemList.length; i++){
+        if(itemList[i].id == taskID){
+            itemList.splice(i, 1);
+            break;
+        }
     }
 }
 
