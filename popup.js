@@ -1,6 +1,6 @@
-var list = document.getElementById('list');
-var newListItem = document.getElementById('newListItem');
-var notFinishedCount = 0;
+var list = document.getElementById('list'); // contains the html for the ul list of todo tasks
+var newListItem = document.getElementById('newListItem'); // the input field for new list items
+var notFinishedCount = 0; // number of tasks not checked off
 var itemList = []; // array used to keep track of all the elements in the todo list
 
 newListItem.focus();
@@ -35,13 +35,13 @@ function addElementToList(item) {
     checkbox.checked = item.checked;
     // add checked listener. Will strikethough text if checked
     checkbox.addEventListener('change', function() {
-        var label = this.nextElementSibling;
+        var text = this.nextElementSibling;
         if(this.checked) {
-            label.style.textDecoration ="line-through";
+            text.style.textDecoration ="line-through";
             notFinishedCount--;
         }
         else {
-            label.style.textDecoration ="none";
+            text.style.textDecoration ="none";
             notFinishedCount++;
         }
         var task = findTask(this.parentElement.id);
@@ -49,14 +49,37 @@ function addElementToList(item) {
         saveList();
     });
 
-    var label = document.createElement('label');
+    // creates the input field used for editing task items
+    // the input field is originally set to readOnly unless it's double clicked
+    var input = document.createElement('input');
+    input.className = "text";
+    input.type = "text"
+    input.readOnly= true;
     if(item.checked) {
-        label.style.textDecoration = "line-through";
+        input.style.textDecoration = "line-through";
     }
     else{
         notFinishedCount++;
     }
-    label.appendChild(document.createTextNode(item.text));
+    input.value = item.text;
+    input.addEventListener('dblclick', function() {
+        this.readOnly = false;
+        this.className = "textEdit"
+    });
+    input.addEventListener('blur', function() {
+        this.readOnly = true;
+        this.className = "text";
+        findTask(this.parentElement.id).text = this.value;
+        saveList();
+    });
+    input.addEventListener('keypress', function(e){
+        if(e.keyCode == 13){
+            this.readOnly = true;
+            this.className = "text";
+            findTask(this.parentElement.id).text = this.value;
+            saveList();
+        }
+    });
 
     // adding the delete button
     var deleteButton = document.createElement('button');
@@ -76,14 +99,14 @@ function addElementToList(item) {
     });
 
     li.appendChild(checkbox);
-    li.appendChild(label);
+    li.appendChild(input);
     li.appendChild(deleteButton);
     li.append
     list.appendChild(li);
     itemList.push(item);
 }
 
-// Saves the elements in the todo list to chrome.storage
+// Saves the elements in the todo list to chrome.storage and updates the badge
 function saveList() {
     chrome.storage.sync.set({'list': itemList}, function() {
         console.log('List updated');
@@ -96,6 +119,7 @@ function saveList() {
     }
 }
 
+// finds a certain task in itemList by its id
 function findTask(id) {
     for(var i = 0; i < itemList.length; i++){
         if(itemList[i].id == id){
@@ -105,6 +129,7 @@ function findTask(id) {
     return null;
 }
 
+// removes a task in itemList
 function removeTask(taskID) {
     for(var i = 0; i < itemList.length; i++){
         if(itemList[i].id == taskID){

@@ -10,10 +10,16 @@
           overflow: hidden;
         }
 
-        #newListItem {
+        input.textEdit {
           border:none;
           background: transparent;
           border-bottom: 1px solid rgb(0, 0, 0);
+          outline: none;
+        }
+
+        input.text {
+          border:none;
+          background: transparent;
           outline: none;
         }
 
@@ -42,7 +48,7 @@
 
       <br/>
 
-      <input type="text" id="newListItem" placeholder="Add New Task">
+      <input type="text" id="newListItem" class="textEdit" placeholder="Add New Task">
       <script type="text/javascript" src="popup.js"></script>
     </body>
   </html>
