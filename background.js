@@ -20,9 +20,19 @@ chrome.runtime.onInstalled.addListener(function() {
       when : nextDay.getTime(),
       periodInMinutes: 1440
     });
+    chrome.alarms.create("unfinishedNotification", 
+    {
+      when : nextDay.getTime()
+    });
 
-    chrome.alarms.onAlarm.addListener(function(alarms){
-      removeCompletedTasks();
+    chrome.alarms.onAlarm.addListener(function(alarm){
+      switch(alarm.name){
+        case "removeCompleted":
+          removeCompletedTasks();
+          break;
+        case "unfinishedNotification":
+          createNotification();
+      }
     });
   });
 
@@ -39,5 +49,27 @@ function removeCompletedTasks() {
     chrome.storage.sync.set({'list': updatedList}, function(){
       console.log("List updated");
     });
+  });
+}
+
+function createNotification(){
+  chrome.storage.sync.get("list", function(data){
+    var unfinishedCount = 0;
+    for(var i = 0; i < data.list.length; i++){
+      if(data.list[i].checked == false){
+        unfinishedCount++;
+      }
+    }
+    if(unfinishedCount > 0){
+
+      console.log("notification created");
+      chrome.notifications.create("unfinishedTasks", 
+      {
+        title : "TO-DO List",
+        type : "basic",
+        iconUrl : "images/list_icon.png",
+        message: "You have " + unfinishedCount + " incomplete task" + (unfinishedCount!=1 ? "s":"") + " in your TO-DO list!"
+      });
+    }
   });
 }
